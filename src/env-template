@@ -1,0 +1,7 @@
+# Activate by execution 'source <env-file>'
+
+export PG_DBNAME=clust
+export PG_HOST=localhost
+export PG_PORT=5432
+export PG_USER=
+export PG_PASSWD=
