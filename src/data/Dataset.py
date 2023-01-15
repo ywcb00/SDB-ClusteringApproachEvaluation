@@ -54,6 +54,11 @@ class IDataset(ABC):
         # insert the dataset into the postgres instance
         pass
 
+    @abstractmethod
+    def dropTables(self):
+        # remove the previously created postgres tables
+        pass
+
     def prepareDatabase(self):
         self.createTables()
         self.preprocess()

@@ -18,3 +18,8 @@ class Real3Dataset(IDataset):
         # insert the dataset into the postgres instance
         raise NotImplementedError()
         return
+
+    def dropTables(self):
+        # remove the previously created postgres tables
+        raise NotImplementedError()
+        return
