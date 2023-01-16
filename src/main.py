@@ -24,11 +24,14 @@ def performClustering(dataset_index, clustering_approach):
     clust.processAll(dataset_index)
 
 def main():
-    dataset_index = DatasetIndex.SYNTH1
-    clustering_approach = ClusteringApproach.SDB
-    loadDataToPostGIS(dataset_index)
-    performClustering(dataset_index, clustering_approach)
-    deleteDataFromPostGIS(dataset_index)
+    pg_ctrl = PostgresController()
+    con  = pg_ctrl.connect()
+    print(con.closed)
+    #dataset_index = DatasetIndex.SYNTH1
+    #clustering_approach = ClusteringApproach.SDB
+    #loadDataToPostGIS(dataset_index)
+    #performClustering(dataset_index, clustering_approach)
+    #deleteDataFromPostGIS(dataset_index)
     return
 
 if __name__ == '__main__':
