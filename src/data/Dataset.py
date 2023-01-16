@@ -1,6 +1,8 @@
+import os
 from abc import ABC, abstractmethod
 from enum import Enum
 from PostgresController import PostgresController
+
 
 class DatasetIndex(Enum):
     SYNTH1 = 1
@@ -9,6 +11,7 @@ class DatasetIndex(Enum):
     REAL1 = 4
     REAL2 = 5
     REAL3 = 6
+
 
 class IDataset(ABC):
     def __init__(self):
@@ -34,7 +37,7 @@ class IDataset(ABC):
             case DatasetIndex.REAL2:
                 return Real2Dataset()
             case DatasetIndex.REAL3:
-                return Real3Dataset()
+                return Real3Dataset(os.path.dirname(__file__) + '/shp/ListedBuildings_10Jan2023.shp')
             case default:
                 raise NotImplementedError()
                 return
