@@ -8,7 +8,7 @@ class IntegratedSDBClustering(IClustering):
         raise NotImplementedError()
         return
 
-    def process(self, dataset_index):
+    def process(self, dataset_index, clustering_method):
         # the actual clustering task
         # return statistics
         raise NotImplementedError()

@@ -6,6 +6,10 @@ class ClusteringApproach(Enum):
     GIS = 2
     ML = 3
 
+class ClusteringMethod(Enum):
+    KMEANS = 1
+    DBSCAN = 2
+
 class IClustering(ABC):
 
     @staticmethod
@@ -31,7 +35,7 @@ class IClustering(ABC):
         pass
 
     @abstractmethod
-    def process(self, dataset_index):
+    def process(self, dataset_index, clustering_method):
         # the actual clustering task
         # return statistics
         pass
@@ -42,11 +46,11 @@ class IClustering(ABC):
         # return statistics
         pass
 
-    def processAll(self, dataset_index):
+    def processAll(self, dataset_index, clustering_method):
         print("---", "Preprocessing", "---")
         pre = self.preprocess(dataset_index)
         print("---", "Processing", "---")
-        pro = self.process(dataset_index)
+        pro = self.process(dataset_index, clustering_method)
         print("---", "Postprocessing", "---")
         post = self.postprocess(dataset_index)
         return (pre, pro, post)
