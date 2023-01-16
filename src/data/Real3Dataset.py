@@ -1,4 +1,4 @@
-from src.data.Dataset import IDataset
+from data.Dataset import IDataset
 import geopandas as gpd
 
 

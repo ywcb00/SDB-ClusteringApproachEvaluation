@@ -24,7 +24,7 @@ def performClustering(dataset_index, clustering_approach, clustering_method):
     clust.processAll(dataset_index, clustering_method)
 
 def main():
-    dataset_index = DatasetIndex.SYNTH1
+    dataset_index = DatasetIndex.REAL3
     clustering_approach = ClusteringApproach.SDB
     clustering_method = ClusteringMethod.KMEANS
     loadDataToPostGIS(dataset_index)
