@@ -35,14 +35,15 @@ class Synth1Dataset(IDataset):
         # create the required postgres tables
         create_stmt = '''CREATE TABLE IF NOT EXISTS synth1(
             id SERIAL PRIMARY KEY NOT NULL,
-            geom GEOMETRY(Point, 26918)
+            geom GEOMETRY(Point, 26918) NOT NULL,
+            cid INT
         );'''
         self.pgc.execute(create_stmt)
         return
 
     def preprocess(self):
         # data generation and transformation if needed
-        n = 10000
+        n = 100000
         k = 10
         self.data = drawKNorm2D(n, k)
         return
