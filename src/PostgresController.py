@@ -2,6 +2,7 @@ import psycopg2
 import os
 from sqlalchemy import create_engine
 
+
 class PostgresController:
     def __init__(self):
         self.dbname = os.environ['PG_DBNAME']
@@ -9,6 +10,12 @@ class PostgresController:
         self.port = os.environ['PG_PORT']
         self.user = os.environ['PG_USER']
         self.passwd = os.environ['PG_PASSWD']
+        self.engine = create_engine('postgresql://{0}:{1}@{2}:{3}/{4}'
+                                    .format(self.user,
+                                            self.passwd,
+                                            self.host,
+                                            self.port,
+                                            self.dbname))
 
     def connect(self):
         conn = psycopg2.connect(
@@ -29,7 +36,7 @@ class PostgresController:
         conn.close()
 
     def executeFetch(self, sql_query):
-        conn=self.connect()
+        conn = self.connect()
         conn.autocommit = True
         cursor = conn.cursor()
         cursor.execute(sql_query)
@@ -37,10 +44,3 @@ class PostgresController:
         conn.commit()
         conn.close()
         return res
-
-    def getEngine(self):
-        return create_engine('postgresql://{0}:{1}@{2}:{3}/{4}'.format(self.user,
-                                                                       self.passwd,
-                                                                       self.host,
-                                                                       self.port,
-                                                                       self.dbname))
