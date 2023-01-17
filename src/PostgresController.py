@@ -1,5 +1,6 @@
 import psycopg2
 import os
+from sqlalchemy import create_engine
 
 class PostgresController:
     def __init__(self):
@@ -36,3 +37,10 @@ class PostgresController:
         conn.commit()
         conn.close()
         return res
+
+    def getEngine(self):
+        return create_engine('postgresql://{0}:{1}@{2}:{3}/{4}'.format(self.user,
+                                                                       self.passwd,
+                                                                       self.host,
+                                                                       self.port,
+                                                                       self.dbname))
