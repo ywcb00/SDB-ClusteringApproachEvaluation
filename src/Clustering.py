@@ -9,6 +9,7 @@ class ClusteringApproach(Enum):
 class ClusteringMethod(Enum):
     KMEANS = 1
     DBSCAN = 2
+    HIERARCHICAL = 3
 
 class IClustering(ABC):
 
