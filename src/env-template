@@ -3,5 +3,5 @@
 export PG_DBNAME=clust
 export PG_HOST=localhost
 export PG_PORT=5432
-export PG_USER=
-export PG_PASSWD=
+export PG_USER=root
+export PG_PASSWD=root
