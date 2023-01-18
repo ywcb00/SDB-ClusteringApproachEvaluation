@@ -55,7 +55,8 @@ class Synth2Dataset(IDataset):
     def createTables(self):
         create_stmt = 'CREATE TABLE IF NOT EXISTS synth2('\
             'id SERIAL PRIMARY KEY NOT NULL,'\
-            'geom GEOMETRY(POINTZM, 4087));'
+            'geom GEOMETRY(POINTZM, 4087),'\
+            'cid INT);'
 
         self.pgc.execute(create_stmt)
 
