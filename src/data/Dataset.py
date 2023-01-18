@@ -33,7 +33,7 @@ class IDataset(ABC):
             case DatasetIndex.SYNTH3:
                 return Synth3Dataset()
             case DatasetIndex.REAL1:
-                return Real1Dataset()
+                return Real1Dataset(os.path.dirname(__file__) + '/real1/geo_export_5b9be610-442e-4118-8809-aea93e86134b.shp')
             case DatasetIndex.REAL2:
                 return Real2Dataset()
             case DatasetIndex.REAL3:
