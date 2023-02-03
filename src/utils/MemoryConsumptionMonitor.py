@@ -1,5 +1,6 @@
 import threading
 import time
+from datetime import datetime
 import numpy as np
 import pandas as pd
 import os
@@ -8,10 +9,18 @@ from proc.core import find_processes
 
 
 class MemoryConsumptionMonitor():
-    def __init__(self, interval):
+    def __init__(self, interval, res_dir):
         self.interval = interval
         self.memoryconsumptions = dict()
         self.pgc = PostgresController()
+        fname = f'memcons_{datetime.now().strftime("%Y%m%d%H%M%S")}.csv'
+        self.fpath = os.path.join(res_dir, fname)
+
+    def storeResults(self, df):
+        if not os.path.isdir(os.path.dirname(self.fpath)):
+            os.makedirs(os.path.dirname(self.fpath))
+        with open(self.fpath, mode='w') as f:
+            df.to_csv(f)
 
     def measurePG(self):
         STAT_QUERY = 'SELECT pid FROM pg_stat_activity;'
@@ -58,4 +67,6 @@ class MemoryConsumptionMonitor():
         self.terminate = True
         self.thread.join()
         df_memc = pd.DataFrame(self.memoryconsumptions)
-        return df_memc.max(axis=0)
+        df_max_memc = df_memc.max(axis=0)
+        self.storeResults(df_max_memc)
+        return df_max_memc
