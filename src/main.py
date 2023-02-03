@@ -5,6 +5,9 @@ from data.Synth1Dataset import Synth1Dataset
 from Clustering import ClusteringApproach, ClusteringMethod, IClustering
 from IntegratedSDBClustering import IntegratedSDBClustering
 from PostgresController import PostgresController
+from utils.MemoryConsumptionMonitor import MemoryConsumptionMonitor
+
+MEASURE_MEMCONS = False
 
 def loadDataToPostGIS(dataset_index):
     print("---", "Loading dataset", dataset_index.name, "---")
@@ -27,9 +30,15 @@ def main():
     dataset_index = DatasetIndex.REAL3
     clustering_approach = ClusteringApproach.ML
     clustering_method = ClusteringMethod.KMEANS
+    if MEASURE_MEMCONS:
+        memconmon = MemoryConsumptionMonitor(1)
+        memconmon.startMonitoring()
     loadDataToPostGIS(dataset_index)
     performClustering(dataset_index, clustering_approach, clustering_method)
     deleteDataFromPostGIS(dataset_index)
+    if MEASURE_MEMCONS:
+        memcon = memconmon.stopMonitoring()
+        print("Measured memory consumption:", memcon)
     return
 
 if __name__ == '__main__':
