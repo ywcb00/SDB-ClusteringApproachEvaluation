@@ -2,6 +2,9 @@ from Clustering import IClustering
 
 class ExternalGISClustering(IClustering):
 
+    def __init__(self, res_dir):
+        super().__init__(res_dir)
+
     def preprocess(self, dataset_index):
         # preprocessing stuff like loading the data from postgres, etc.
         # return statistics

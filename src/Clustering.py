@@ -1,5 +1,9 @@
 from abc import ABC, abstractmethod
+import csv
+from datetime import datetime
 from enum import Enum
+import os
+import time
 
 class ClusteringApproach(Enum):
     SDB = 1
@@ -13,21 +17,33 @@ class ClusteringMethod(Enum):
 
 class IClustering(ABC):
 
+    def __init__(self, res_dir):
+        fname = f'perf_{datetime.now().strftime("%Y%m%d%H%M%S")}.csv'
+        self.fpath = os.path.join(res_dir, fname)
+
     @staticmethod
-    def getClusteringApproach(clustering_approach):
+    def getClusteringApproach(clustering_approach, res_dir):
         from IntegratedSDBClustering import IntegratedSDBClustering
         from ExternalGISClustering import ExternalGISClustering
         from ExternalMLClustering import ExternalMLClustering
         match clustering_approach:
             case ClusteringApproach.SDB:
-                return IntegratedSDBClustering()
+                return IntegratedSDBClustering(res_dir)
             case ClusteringApproach.GIS:
-                return ExternalGISClustering()
+                return ExternalGISClustering(res_dir)
             case ClusteringApproach.ML:
-                return ExternalMLClustering()
+                return ExternalMLClustering(res_dir)
             case default:
                 raise NotImplementedError()
                 return
+
+    def storeResults(self, val_dict):
+        if not os.path.isdir(os.path.dirname(self.fpath)):
+            os.makedirs(os.path.dirname(self.fpath))
+        with open(self.fpath, mode='w') as f:
+            writer = csv.DictWriter(f, fieldnames=list(val_dict.keys()))
+            writer.writeheader()
+            writer.writerows([val_dict])
 
     @abstractmethod
     def preprocess(self, dataset_index):
@@ -47,11 +63,26 @@ class IClustering(ABC):
         # return statistics
         pass
 
-    def processAll(self, dataset_index, clustering_method):
-        print("---", "Preprocessing", "---")
-        pre = self.preprocess(dataset_index)
-        print("---", "Processing", "---")
-        pro = self.process(dataset_index, clustering_method)
-        print("---", "Postprocessing", "---")
-        post = self.postprocess(dataset_index)
-        return (pre, pro, post)
+    def processAll(self, dataset_index, clustering_method, MEASURE_PERFORMANCE):
+        time_measurements = dict()
+
+        if MEASURE_PERFORMANCE:
+            pre_t0 = time.perf_counter()
+        self.preprocess(dataset_index)
+        if MEASURE_PERFORMANCE:
+            pre_t1 = time.perf_counter()
+            time_measurements["pre_time"] = (pre_t1 - pre_t0) * 10**(-3) # milliseconds
+
+            main_t0 = time.perf_counter()
+        self.process(dataset_index, clustering_method)
+        if MEASURE_PERFORMANCE:
+            main_t1 = time.perf_counter()
+            time_measurements["main_time"] = (main_t1 - main_t0) * 10**(-3) # milliseconds
+
+            post_t0 = time.perf_counter()
+        self.postprocess(dataset_index)
+        if MEASURE_PERFORMANCE:
+            post_t1 = time.perf_counter()
+            time_measurements["post_time"] = (post_t1 - post_t0) * 10**(-3) # milliseconds
+            self.storeResults(time_measurements)
+        return

@@ -8,6 +8,7 @@ import os
 from PostgresController import PostgresController
 from utils.MemoryConsumptionMonitor import MemoryConsumptionMonitor
 
+MEASURE_PERFORMANCE = False
 MEASURE_MEMCONS = False
 
 def getResultsDirectory(dataset_index, clustering_approach, clustering_method):
@@ -27,10 +28,10 @@ def deleteDataFromPostGIS(dataset_index):
     data.dropTables()
     return
 
-def performClustering(dataset_index, clustering_approach, clustering_method):
+def performClustering(dataset_index, clustering_approach, clustering_method, res_dir):
     print("---", "Clustering data", dataset_index.name, "with", clustering_approach.name, "---")
-    clust = IClustering.getClusteringApproach(clustering_approach)
-    clust.processAll(dataset_index, clustering_method)
+    clust = IClustering.getClusteringApproach(clustering_approach, res_dir)
+    clust.processAll(dataset_index, clustering_method, MEASURE_PERFORMANCE)
 
 def process(dataset_index, clustering_approach, clustering_method):
     res_dir = getResultsDirectory(dataset_index, clustering_approach, clustering_method)
@@ -38,7 +39,7 @@ def process(dataset_index, clustering_approach, clustering_method):
         memconmon = MemoryConsumptionMonitor(1, res_dir)
         memconmon.startMonitoring()
     loadDataToPostGIS(dataset_index)
-    performClustering(dataset_index, clustering_approach, clustering_method)
+    performClustering(dataset_index, clustering_approach, clustering_method, res_dir)
     deleteDataFromPostGIS(dataset_index)
     if MEASURE_MEMCONS:
         memcon = memconmon.stopMonitoring()
