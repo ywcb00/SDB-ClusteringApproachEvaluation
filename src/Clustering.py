@@ -4,6 +4,7 @@ from datetime import datetime
 from enum import Enum
 import os
 import time
+from utils.MemoryConsumptionMonitor import MemoryConsumptionMonitor
 
 class ClusteringApproach(Enum):
     SDB = 1
@@ -18,8 +19,7 @@ class ClusteringMethod(Enum):
 class IClustering(ABC):
 
     def __init__(self, res_dir):
-        fname = f'perf_{datetime.now().strftime("%Y%m%d%H%M%S")}.csv'
-        self.fpath = os.path.join(res_dir, fname)
+        self.res_dir = res_dir
 
     @staticmethod
     def getClusteringApproach(clustering_approach, res_dir):
@@ -38,9 +38,11 @@ class IClustering(ABC):
                 return
 
     def storeResults(self, val_dict):
-        if not os.path.isdir(os.path.dirname(self.fpath)):
-            os.makedirs(os.path.dirname(self.fpath))
-        with open(self.fpath, mode='w') as f:
+        if not os.path.isdir(self.res_dir):
+            os.makedirs(self.res_dir)
+        fname = f'perf_{datetime.now().strftime("%Y%m%d%H%M%S")}.csv'
+        fpath = os.path.join(self.res_dir, fname)
+        with open(fpath, mode='w') as f:
             writer = csv.DictWriter(f, fieldnames=list(val_dict.keys()))
             writer.writeheader()
             writer.writerows([val_dict])
@@ -63,26 +65,46 @@ class IClustering(ABC):
         # return statistics
         pass
 
-    def processAll(self, dataset_index, clustering_method, MEASURE_PERFORMANCE):
+    def processAll(self, dataset_index, clustering_method,
+        MEASURE_PERFORMANCE, MEASURE_MEMCONS):
         time_measurements = dict()
+        memcon_delay = 1
 
         if MEASURE_PERFORMANCE:
             pre_t0 = time.perf_counter()
+        if MEASURE_MEMCONS:
+            memconmon = MemoryConsumptionMonitor(memcon_delay, self.res_dir)
+            memconmon.startMonitoring()
+
         self.preprocess(dataset_index)
+
         if MEASURE_PERFORMANCE:
             pre_t1 = time.perf_counter()
-            time_measurements["pre_time"] = (pre_t1 - pre_t0) * 10**(-3) # milliseconds
-
+            time_measurements["pre_time"] = (pre_t1 - pre_t0) * 10**(3) # milliseconds
             main_t0 = time.perf_counter()
+        if MEASURE_MEMCONS:
+            memcon = memconmon.stopMonitoring("pre")
+            memconmon = MemoryConsumptionMonitor(memcon_delay, self.res_dir)
+            memconmon.startMonitoring()
+
         self.process(dataset_index, clustering_method)
+
         if MEASURE_PERFORMANCE:
             main_t1 = time.perf_counter()
-            time_measurements["main_time"] = (main_t1 - main_t0) * 10**(-3) # milliseconds
-
+            time_measurements["main_time"] = (main_t1 - main_t0) * 10**(3) # milliseconds
             post_t0 = time.perf_counter()
+        if MEASURE_MEMCONS:
+            memcon = memconmon.stopMonitoring("main")
+            memconmon = MemoryConsumptionMonitor(memcon_delay, self.res_dir)
+            memconmon.startMonitoring()
+
         self.postprocess(dataset_index)
+
         if MEASURE_PERFORMANCE:
             post_t1 = time.perf_counter()
-            time_measurements["post_time"] = (post_t1 - post_t0) * 10**(-3) # milliseconds
+            time_measurements["post_time"] = (post_t1 - post_t0) * 10**(3) # milliseconds
             self.storeResults(time_measurements)
+        if MEASURE_MEMCONS:
+            memcon = memconmon.stopMonitoring("post")
+
         return

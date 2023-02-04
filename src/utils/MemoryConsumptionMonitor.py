@@ -13,13 +13,14 @@ class MemoryConsumptionMonitor():
         self.interval = interval
         self.memoryconsumptions = dict()
         self.pgc = PostgresController()
-        fname = f'memcons_{datetime.now().strftime("%Y%m%d%H%M%S")}.csv'
-        self.fpath = os.path.join(res_dir, fname)
+        self.res_dir = res_dir
 
-    def storeResults(self, df):
-        if not os.path.isdir(os.path.dirname(self.fpath)):
-            os.makedirs(os.path.dirname(self.fpath))
-        with open(self.fpath, mode='w') as f:
+    def storeResults(self, df, prefix):
+        if not os.path.isdir(self.res_dir):
+            os.makedirs(self.res_dir)
+        fname = f'memcons_{prefix}_{datetime.now().strftime("%Y%m%d%H%M%S")}.csv'
+        fpath = os.path.join(self.res_dir, fname)
+        with open(fpath, mode='w') as f:
             df.to_csv(f)
 
     def measurePG(self):
@@ -63,10 +64,10 @@ class MemoryConsumptionMonitor():
         self.thread = threading.Thread(target=self.monitor)
         self.thread.start()
 
-    def stopMonitoring(self):
+    def stopMonitoring(self, prefix):
         self.terminate = True
         self.thread.join()
         df_memc = pd.DataFrame(self.memoryconsumptions)
         df_max_memc = df_memc.max(axis=0)
-        self.storeResults(df_max_memc)
+        self.storeResults(df_max_memc, prefix)
         return df_max_memc

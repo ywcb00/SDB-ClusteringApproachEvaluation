@@ -6,7 +6,6 @@ from Clustering import ClusteringApproach, ClusteringMethod, IClustering
 from IntegratedSDBClustering import IntegratedSDBClustering
 import os
 from PostgresController import PostgresController
-from utils.MemoryConsumptionMonitor import MemoryConsumptionMonitor
 
 MEASURE_PERFORMANCE = False
 MEASURE_MEMCONS = False
@@ -31,22 +30,16 @@ def deleteDataFromPostGIS(dataset_index):
 def performClustering(dataset_index, clustering_approach, clustering_method, res_dir):
     print("---", "Clustering data", dataset_index.name, "with", clustering_approach.name, "---")
     clust = IClustering.getClusteringApproach(clustering_approach, res_dir)
-    clust.processAll(dataset_index, clustering_method, MEASURE_PERFORMANCE)
+    clust.processAll(dataset_index, clustering_method, MEASURE_PERFORMANCE, MEASURE_MEMCONS)
 
 def process(dataset_index, clustering_approach, clustering_method):
     res_dir = getResultsDirectory(dataset_index, clustering_approach, clustering_method)
-    if MEASURE_MEMCONS:
-        memconmon = MemoryConsumptionMonitor(1, res_dir)
-        memconmon.startMonitoring()
     loadDataToPostGIS(dataset_index)
     performClustering(dataset_index, clustering_approach, clustering_method, res_dir)
     deleteDataFromPostGIS(dataset_index)
-    if MEASURE_MEMCONS:
-        memcon = memconmon.stopMonitoring()
-        print("Measured memory consumption:", memcon)
 
 def main():
-    dataset_index = DatasetIndex.REAL1
+    dataset_index = DatasetIndex.SYNTH2
     clustering_approach = ClusteringApproach.SDB
     clustering_method = ClusteringMethod.KMEANS
     process(dataset_index, clustering_approach, clustering_method)
