@@ -1,7 +1,10 @@
 # Activate by execution 'source <env-file>'
 
 export PG_DBNAME=clust
+export PG_DBSCHEMA=public
 export PG_HOST=localhost
 export PG_PORT=5432
 export PG_USER=root
 export PG_PASSWD=root
+export PYTHONPATH=/usr/lib/python3.10/site-packages:/usr/share/qgis/python/plugins:/usr/share/qgis/python/plugins/processing:/usr/share/qgis/python:/usr/lib/qgis/plugins
+export QGIS_PREFIX_PATH=/usr
