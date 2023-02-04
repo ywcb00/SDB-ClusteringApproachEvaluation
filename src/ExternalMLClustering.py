@@ -8,8 +8,8 @@ from sklearn.cluster import KMeans, AgglomerativeClustering
 
 class ExternalMLClustering(IClustering):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, res_dir):
+        super().__init__(res_dir)
         self.pgc = PostgresController()
         self.table_names = ['synth1', 'synth2', 'synth3', 'real1', 'real2', 'real3']
 

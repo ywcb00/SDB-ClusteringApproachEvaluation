@@ -15,8 +15,8 @@ Processing.initialize()
 
 class ExternalGISClustering(IClustering):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, res_dir):
+        super().__init__(res_dir)
 
         self._data_uri = QgsDataSourceUri()
         self._data_uri.setConnection(
