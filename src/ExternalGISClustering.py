@@ -47,11 +47,11 @@ class ExternalGISClustering(IClustering):
 
     def process(self, dataset_index, clustering_method):
         # the actual clustering task
-        db_layer = QgsVectorLayer(self._data_uri.uri(), "db_layer", "postgres")
-        assert(db_layer.isValid())
+        self._db_layer = QgsVectorLayer(self._data_uri.uri(), "db_layer", "postgres")
+        assert(self._db_layer.isValid())
             
         param_dict = {
-            "INPUT":db_layer, 
+            "INPUT":self._db_layer, 
             "OUTPUT": 'TEMPORARY_OUTPUT'
         }
 
@@ -65,18 +65,16 @@ class ExternalGISClustering(IClustering):
                 raise NotImplementedError()
 
         res = processing.run(algorithm_id, param_dict)
-        clust_layer = res['OUTPUT']
-
-        cid_idx = db_layer.fields().indexFromName('cid')
-        
-        with edit(db_layer):
-            for f_db, f_c in zip(db_layer.getFeatures(), clust_layer.getFeatures()):
-                db_layer.changeAttributeValue(f_db.id(), cid_idx, f_c['CLUSTER_ID'])
+        self._clust_layer = res['OUTPUT']
 
         return 
 
     def postprocess(self, dataset_index):
         # postprocessing stuff like uploading the clustered data to postgres
-        # return statistics
-        # raise NotImplementedError()
+        cid_idx = self._db_layer.fields().indexFromName('cid')
+        
+        with edit(self._db_layer):
+            for f_db, f_c in zip(self._db_layer.getFeatures(), self._clust_layer.getFeatures()):
+                self._db_layer.changeAttributeValue(f_db.id(), cid_idx, f_c['CLUSTER_ID'])
+        
         return
