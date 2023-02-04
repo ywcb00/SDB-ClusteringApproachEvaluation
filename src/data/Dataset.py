@@ -37,7 +37,7 @@ class IDataset(ABC):
             case DatasetIndex.REAL2:
                 return Real2Dataset()
             case DatasetIndex.REAL3:
-                return Real3Dataset(os.path.dirname(__file__) + '/shp/ListedBuildings_10Jan2023.shp', 'EPSG:7405')
+                return Real3Dataset(os.path.dirname(__file__) + '/shp/ListedBuildings_10Jan2023.shp', 7405)
             case default:
                 raise NotImplementedError()
                 return

@@ -78,5 +78,5 @@ class ExternalGISClustering(IClustering):
     def postprocess(self, dataset_index):
         # postprocessing stuff like uploading the clustered data to postgres
         # return statistics
-        raise NotImplementedError()
+        # raise NotImplementedError()
         return

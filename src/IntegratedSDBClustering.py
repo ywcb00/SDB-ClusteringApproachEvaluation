@@ -22,6 +22,8 @@ class IntegratedSDBClustering(IClustering):
                 self.processPointZMClustering(dataset_index, clustering_method)
             case DatasetIndex.REAL1:
                 self.processPointClustering(dataset_index, clustering_method)
+            case DatasetIndex.REAL3:
+                self.processPointClustering(dataset_index, clustering_method)
             case default:
                 raise NotImplementedError()
         return
@@ -40,6 +42,11 @@ class IntegratedSDBClustering(IClustering):
                 minpoints = 10
             case DatasetIndex.REAL1:
                 table_name = 'real1'
+                k = 5
+                eps = 4
+                minpoints = 30
+            case DatasetIndex.REAL3:
+                table_name = 'real3'
                 k = 5
                 eps = 4
                 minpoints = 30

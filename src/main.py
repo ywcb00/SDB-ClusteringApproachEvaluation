@@ -18,6 +18,13 @@ eval_configs = [
     {'n': 100000, 'dataset_index': DatasetIndex.SYNTH1, 'clustering_method': ClusteringMethod.DBSCAN},
     {'n': None, 'dataset_index': DatasetIndex.REAL1, 'clustering_method': ClusteringMethod.KMEANS},
     {'n': None, 'dataset_index': DatasetIndex.REAL1, 'clustering_method': ClusteringMethod.DBSCAN},
+    {'n': None, 'dataset_index': DatasetIndex.REAL3, 'clustering_method': ClusteringMethod.KMEANS},
+    {'n': None, 'dataset_index': DatasetIndex.REAL3, 'clustering_method': ClusteringMethod.DBSCAN},
+    {'n': 10000, 'dataset_index': DatasetIndex.SYNTH2, 'clustering_method': ClusteringMethod.KMEANS},
+    {'n': 100000, 'dataset_index': DatasetIndex.SYNTH2, 'clustering_method': ClusteringMethod.KMEANS},
+    {'n': 1000000, 'dataset_index': DatasetIndex.SYNTH2, 'clustering_method': ClusteringMethod.KMEANS},
+    {'n': 10000, 'dataset_index': DatasetIndex.SYNTH2, 'clustering_method': ClusteringMethod.DBSCAN},
+    {'n': 100000, 'dataset_index': DatasetIndex.SYNTH2, 'clustering_method': ClusteringMethod.DBSCAN},
 ]
 
 def getResultsDirectory(dataset_index, clustering_approach, clustering_method, n):
