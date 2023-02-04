@@ -60,7 +60,7 @@ class Synth2Dataset(IDataset):
 
         self.pgc.execute(create_stmt)
 
-    def preprocess(self):
+    def preprocess(self, n=10000):
         # data generation and transformation if needed
         self._data = np.concatenate([self._make_cluster(config) for config in self._cluster_configs])
         if self._latlon_transform:

@@ -48,7 +48,7 @@ class IDataset(ABC):
         pass
 
     @abstractmethod
-    def preprocess(self):
+    def preprocess(self, n):
         # data generation and transformation if needed
         pass
 
@@ -62,7 +62,7 @@ class IDataset(ABC):
         # remove the previously created postgres tables
         pass
 
-    def prepareDatabase(self):
+    def prepareDatabase(self, n=None):
         self.createTables()
-        self.preprocess()
+        self.preprocess(n)
         self.pushData()

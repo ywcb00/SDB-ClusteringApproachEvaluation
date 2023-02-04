@@ -41,9 +41,8 @@ class Synth1Dataset(IDataset):
         self.pgc.execute(create_stmt)
         return
 
-    def preprocess(self):
+    def preprocess(self, n=100000):
         # data generation and transformation if needed
-        n = 100000
         k = 10
         self.data = drawKNorm2D(n, k)
         return

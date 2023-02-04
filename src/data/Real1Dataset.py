@@ -23,7 +23,7 @@ class Real1Dataset(IDataset):
         real1_table.create(self.pgc.engine)
         return
 
-    def preprocess(self):
+    def preprocess(self, n=None):
         # data generation and transformation if needed
         self.data = gpd.read_file(self.path)
         self.data.rename({'geometry': 'geom'}, axis=1, inplace=True)

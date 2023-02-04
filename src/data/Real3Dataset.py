@@ -15,7 +15,7 @@ class Real3Dataset(IDataset):
         # create the required postgres tables
         return
 
-    def preprocess(self):
+    def preprocess(self, n=None):
         # data generation and transformation if needed
         # adds cluster id field of type integer
         self.data['cid'] = None

@@ -9,7 +9,7 @@ class Synth3Dataset(IDataset):
         raise NotImplementedError()
         return
 
-    def preprocess(self):
+    def preprocess(self, n=None):
         # data generation and transformation if needed
         raise NotImplementedError()
         return
