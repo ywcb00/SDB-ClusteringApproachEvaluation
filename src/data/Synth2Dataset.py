@@ -72,6 +72,8 @@ class Synth2Dataset(IDataset):
         clusters = self._data
         clusters[:, [0,1]] = clusters[:, [1,0]]
 
+        clusters[:, -1] = np.abs(clusters[:, -1]) # make the weight m strictly positive
+
         value_str = ", ".join([f'(ST_POINTZM({",".join(map(str, p))}))' for p in clusters])
         insert_stmt = f'INSERT INTO synth2 (geom) VALUES {value_str}'
         self.pgc.execute(insert_stmt)

@@ -84,15 +84,15 @@ class IntegratedSDBClustering(IClustering):
         match clustering_method:
             case ClusteringMethod.KMEANS:
                 cluster_query = f'''SELECT id,
-                        ST_ClusterKMeans(ST_Force3D(geom), {k})
-                            over (ST_M(geom))
+                        ST_ClusterKMeans(geom, {k})
+                            over ()
                         AS cid
                     FROM {table_name}
                 '''
             case ClusteringMethod.DBSCAN:
                 cluster_query = f'''SELECT id,
-                        ST_ClusterDBSCAN(ST_Force3D(geom), eps := {eps}, minpoints := {minpoints})
-                            over (ST_M(geom))
+                        ST_ClusterDBSCAN(geom, eps := {eps}, minpoints := {minpoints})
+                            over ()
                         AS cid
                     FROM {table_name}
                 '''
