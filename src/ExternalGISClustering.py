@@ -43,13 +43,14 @@ class ExternalGISClustering(IClustering):
             self._db_schema, 
             self._db_table_names[dataset_index], 
             self._db_geom_col)
+
+        self._db_layer = QgsVectorLayer(self._data_uri.uri(), "db_layer", "postgres")
+        assert(self._db_layer.isValid())
+
         return
 
     def process(self, dataset_index, clustering_method):
         # the actual clustering task
-        self._db_layer = QgsVectorLayer(self._data_uri.uri(), "db_layer", "postgres")
-        assert(self._db_layer.isValid())
-            
         param_dict = {
             "INPUT":self._db_layer, 
             "OUTPUT": 'TEMPORARY_OUTPUT'
