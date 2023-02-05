@@ -11,20 +11,35 @@ MEASURE_PERFORMANCE = False
 MEASURE_MEMCONS = False
 
 eval_configs = [
-    {'n': 10000, 'dataset_index': DatasetIndex.SYNTH1, 'clustering_method': ClusteringMethod.KMEANS},
-    {'n': 100000, 'dataset_index': DatasetIndex.SYNTH1, 'clustering_method': ClusteringMethod.KMEANS},
+    {'n': 200000, 'dataset_index': DatasetIndex.SYNTH1, 'clustering_method': ClusteringMethod.KMEANS},
+    {'n': 400000, 'dataset_index': DatasetIndex.SYNTH1, 'clustering_method': ClusteringMethod.KMEANS},
+    {'n': 600000, 'dataset_index': DatasetIndex.SYNTH1, 'clustering_method': ClusteringMethod.KMEANS},
+    {'n': 800000, 'dataset_index': DatasetIndex.SYNTH1, 'clustering_method': ClusteringMethod.KMEANS},
     {'n': 1000000, 'dataset_index': DatasetIndex.SYNTH1, 'clustering_method': ClusteringMethod.KMEANS},
-    {'n': 10000, 'dataset_index': DatasetIndex.SYNTH1, 'clustering_method': ClusteringMethod.DBSCAN},
+    
+    {'n': 50000, 'dataset_index': DatasetIndex.SYNTH1, 'clustering_method': ClusteringMethod.DBSCAN},
     {'n': 100000, 'dataset_index': DatasetIndex.SYNTH1, 'clustering_method': ClusteringMethod.DBSCAN},
+    {'n': 150000, 'dataset_index': DatasetIndex.SYNTH1, 'clustering_method': ClusteringMethod.DBSCAN},
+    {'n': 200000, 'dataset_index': DatasetIndex.SYNTH1, 'clustering_method': ClusteringMethod.DBSCAN},
+    {'n': 250000, 'dataset_index': DatasetIndex.SYNTH1, 'clustering_method': ClusteringMethod.DBSCAN},
+    
+    {'n': 200000, 'dataset_index': DatasetIndex.SYNTH2, 'clustering_method': ClusteringMethod.KMEANS},
+    {'n': 400000, 'dataset_index': DatasetIndex.SYNTH2, 'clustering_method': ClusteringMethod.KMEANS},
+    {'n': 600000, 'dataset_index': DatasetIndex.SYNTH2, 'clustering_method': ClusteringMethod.KMEANS},
+    {'n': 800000, 'dataset_index': DatasetIndex.SYNTH2, 'clustering_method': ClusteringMethod.KMEANS},
+    {'n': 1000000, 'dataset_index': DatasetIndex.SYNTH2, 'clustering_method': ClusteringMethod.KMEANS},
+    
+    {'n': 25000, 'dataset_index': DatasetIndex.SYNTH2, 'clustering_method': ClusteringMethod.DBSCAN},
+    {'n': 50000, 'dataset_index': DatasetIndex.SYNTH2, 'clustering_method': ClusteringMethod.DBSCAN},
+    {'n': 75000, 'dataset_index': DatasetIndex.SYNTH2, 'clustering_method': ClusteringMethod.DBSCAN},
+    {'n': 100000, 'dataset_index': DatasetIndex.SYNTH2, 'clustering_method': ClusteringMethod.DBSCAN},
+    {'n': 125000, 'dataset_index': DatasetIndex.SYNTH2, 'clustering_method': ClusteringMethod.DBSCAN},
+    
     {'n': None, 'dataset_index': DatasetIndex.REAL1, 'clustering_method': ClusteringMethod.KMEANS},
     {'n': None, 'dataset_index': DatasetIndex.REAL1, 'clustering_method': ClusteringMethod.DBSCAN},
+    
     {'n': None, 'dataset_index': DatasetIndex.REAL3, 'clustering_method': ClusteringMethod.KMEANS},
     {'n': None, 'dataset_index': DatasetIndex.REAL3, 'clustering_method': ClusteringMethod.DBSCAN},
-    {'n': 10000, 'dataset_index': DatasetIndex.SYNTH2, 'clustering_method': ClusteringMethod.KMEANS},
-    {'n': 100000, 'dataset_index': DatasetIndex.SYNTH2, 'clustering_method': ClusteringMethod.KMEANS},
-    {'n': 1000000, 'dataset_index': DatasetIndex.SYNTH2, 'clustering_method': ClusteringMethod.KMEANS},
-    {'n': 10000, 'dataset_index': DatasetIndex.SYNTH2, 'clustering_method': ClusteringMethod.DBSCAN},
-    {'n': 100000, 'dataset_index': DatasetIndex.SYNTH2, 'clustering_method': ClusteringMethod.DBSCAN},
 ]
 
 def getResultsDirectory(dataset_index, clustering_approach, clustering_method, n):
@@ -46,28 +61,32 @@ def deleteDataFromPostGIS(dataset_index):
     data.dropTables()
     return
 
-def performClustering(dataset_index, clustering_approach, clustering_method, res_dir):
+def performClustering(dataset_index, clustering_approach, clustering_method, res_dir, mp, mm):
     print("---", "Clustering data", dataset_index.name, "with", clustering_approach.name, "---")
     clust = IClustering.getClusteringApproach(clustering_approach, res_dir)
-    clust.processAll(dataset_index, clustering_method, MEASURE_PERFORMANCE, MEASURE_MEMCONS)
+    clust.processAll(dataset_index, clustering_method, mp, mm)
 
-def process(dataset_index, clustering_approach, clustering_method, n):
+def process(dataset_index, clustering_approach, clustering_method, n, mp, mm):
     res_dir = getResultsDirectory(dataset_index, clustering_approach, clustering_method, n)
     loadDataToPostGIS(dataset_index, n)
-    performClustering(dataset_index, clustering_approach, clustering_method, res_dir)
+    performClustering(dataset_index, clustering_approach, clustering_method, res_dir, mp, mm)
     deleteDataFromPostGIS(dataset_index)
 
 def main():
-    repetitions = 10
-    for counter in range(repetitions):
-        print("Repetition", counter)
-        for conf in eval_configs:
-            print("Processing config", conf)
-            dataset_index = conf['dataset_index']
-            clustering_approach = ClusteringApproach.SDB
-            clustering_method = conf['clustering_method']
-            n = conf['n']
-            process(dataset_index, clustering_approach, clustering_method, n)
+    eval_approaches = [ClusteringApproach.SDB, ClusteringApproach.GIS, ClusteringApproach.ML]
+    repetitions = 1
+    for measurePerf in [True, False]:
+        mp = measurePerf
+        mm = not measurePerf
+        for counter in range(repetitions):
+            print("Repetition", counter)
+            for conf in eval_configs:
+                print("Processing config", conf)
+                for clustering_approach in eval_approaches:
+                    dataset_index = conf['dataset_index']
+                    clustering_method = conf['clustering_method']
+                    n = conf['n']
+                    process(dataset_index, clustering_approach, clustering_method, n, mp, mm)
     return
 
 if __name__ == '__main__':

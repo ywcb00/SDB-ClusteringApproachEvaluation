@@ -30,8 +30,7 @@ class IntegratedSDBClustering(IClustering):
 
     def postprocess(self, dataset_index):
         # postprocessing stuff like uploading the clustered data to postgres
-        # return statistics
-        return {"time": 0, "memcons": 0}
+        return
 
     def processPointClustering(self, dataset_index, clustering_method):
         match dataset_index:
@@ -42,14 +41,14 @@ class IntegratedSDBClustering(IClustering):
                 minpoints = 10
             case DatasetIndex.REAL1:
                 table_name = 'real1'
-                k = 5
-                eps = 4
-                minpoints = 30
+                k = 7
+                eps = 20
+                minpoints = 10
             case DatasetIndex.REAL3:
                 table_name = 'real3'
-                k = 5
-                eps = 4
-                minpoints = 30
+                k = 7
+                eps = 20
+                minpoints = 10
             case default:
                 raise NotImplementedError()
 
@@ -82,8 +81,8 @@ class IntegratedSDBClustering(IClustering):
         match dataset_index:
             case DatasetIndex.SYNTH2:
                 table_name = 'synth2'
-                k = 5
-                eps = 1
+                k = 7
+                eps = 0.001
                 minpoints = 10
             case default:
                 raise NotImplementedError()

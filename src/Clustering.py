@@ -14,7 +14,6 @@ class ClusteringApproach(Enum):
 class ClusteringMethod(Enum):
     KMEANS = 1
     DBSCAN = 2
-    HIERARCHICAL = 3
 
 class IClustering(ABC):
 
@@ -68,7 +67,7 @@ class IClustering(ABC):
     def processAll(self, dataset_index, clustering_method,
         MEASURE_PERFORMANCE, MEASURE_MEMCONS):
         time_measurements = dict()
-        memcon_delay = 1
+        memcon_delay = 0.25
 
         if MEASURE_PERFORMANCE:
             pre_t0 = time.perf_counter()
