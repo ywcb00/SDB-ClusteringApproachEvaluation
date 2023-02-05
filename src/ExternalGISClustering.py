@@ -100,7 +100,7 @@ class ExternalGISClustering(IClustering):
         cid_idx = self._db_layer.fields().indexFromName('cid')
         
         with edit(self._db_layer):
-            for f_db, f_c in zip(self._db_layer.getFeatures(), self._clust_layer.getFeatures()):
-                self._db_layer.changeAttributeValue(f_db.id(), cid_idx, f_c['CLUSTER_ID'])
+            id_cluster_dict =  {f_db.id(): f_c['CLUSTER_ID'] for f_db, f_c in zip(self._db_layer.getFeatures(), self._clust_layer.getFeatures())}
+            self._db_layer.changeAttributeValues(cid_idx, id_cluster_dict)
         
         return
