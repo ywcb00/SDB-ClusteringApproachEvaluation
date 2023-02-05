@@ -18,7 +18,7 @@ class IDataset(ABC):
         self.pgc = PostgresController()
 
     @staticmethod
-    def getDataset(dataset_index):
+    def getDataset(dataset_index, seed):
         from data.Synth1Dataset import Synth1Dataset
         from data.Synth2Dataset import Synth2Dataset
         from data.Synth3Dataset import Synth3Dataset
@@ -27,11 +27,11 @@ class IDataset(ABC):
         from data.Real3Dataset import Real3Dataset
         match dataset_index:
             case DatasetIndex.SYNTH1:
-                return Synth1Dataset()
+                return Synth1Dataset(seed)
             case DatasetIndex.SYNTH2:
-                return Synth2Dataset()
+                return Synth2Dataset(seed)
             case DatasetIndex.SYNTH3:
-                return Synth3Dataset()
+                return Synth3Dataset(seed)
             case DatasetIndex.REAL1:
                 return Real1Dataset(os.path.dirname(__file__) + '/real1/geo_export_5b9be610-442e-4118-8809-aea93e86134b.shp')
             case DatasetIndex.REAL2:

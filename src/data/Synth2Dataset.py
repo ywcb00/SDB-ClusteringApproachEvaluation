@@ -37,9 +37,9 @@ class Synth2Dataset(IDataset):
         return np.hstack([latlon, clusters[:, 2:]])
 
         
-    def __init__(self):
+    def __init__(self, seed):
         super().__init__()
-        self._rng = np.random.Generator(np.random.MT19937(42))
+        self._rng = np.random.Generator(np.random.MT19937(seed))
         self._discrete_m = False
         self._var_m = 0.3
         self._latlon_transform = True

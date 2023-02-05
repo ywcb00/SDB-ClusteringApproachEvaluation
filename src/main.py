@@ -49,16 +49,15 @@ def getResultsDirectory(dataset_index, clustering_approach, clustering_method, n
         path = os.path.join(path, str(n))
     return path
 
-def loadDataToPostGIS(dataset_index, n):
+def loadDataToPostGIS(dataset_index, n, seed):
     print("---", "Loading dataset", dataset_index.name, "---")
-    data = IDataset.getDataset(dataset_index)
-    data.prepareDatabase(n)
-    return
+    dataset = IDataset.getDataset(dataset_index, seed)
+    dataset.prepareDatabase(n)
+    return dataset
 
-def deleteDataFromPostGIS(dataset_index):
+def deleteDataFromPostGIS(dataset, dataset_index):
     print("---", "Deleting dataset", dataset_index.name, "---")
-    data = IDataset.getDataset(dataset_index)
-    data.dropTables()
+    dataset.dropTables()
     return
 
 def performClustering(dataset_index, clustering_approach, clustering_method, res_dir, mp, mm):
@@ -66,11 +65,11 @@ def performClustering(dataset_index, clustering_approach, clustering_method, res
     clust = IClustering.getClusteringApproach(clustering_approach, res_dir)
     clust.processAll(dataset_index, clustering_method, mp, mm)
 
-def process(dataset_index, clustering_approach, clustering_method, n, mp, mm):
+def process(dataset_index, clustering_approach, clustering_method, n, mp, mm, seed):
     res_dir = getResultsDirectory(dataset_index, clustering_approach, clustering_method, n)
-    loadDataToPostGIS(dataset_index, n)
+    dataset = loadDataToPostGIS(dataset_index, n, seed)
     performClustering(dataset_index, clustering_approach, clustering_method, res_dir, mp, mm)
-    deleteDataFromPostGIS(dataset_index)
+    deleteDataFromPostGIS(dataset, dataset_index)
 
 def main():
     eval_approaches = [ClusteringApproach.SDB, ClusteringApproach.GIS, ClusteringApproach.ML]
@@ -86,7 +85,7 @@ def main():
                     dataset_index = conf['dataset_index']
                     clustering_method = conf['clustering_method']
                     n = conf['n']
-                    process(dataset_index, clustering_approach, clustering_method, n, mp, mm)
+                    process(dataset_index, clustering_approach, clustering_method, n, mp, mm, counter+42)
     return
 
 if __name__ == '__main__':
