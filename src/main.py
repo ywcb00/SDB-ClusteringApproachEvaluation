@@ -35,11 +35,11 @@ eval_configs = [
     {'n': 100000, 'dataset_index': DatasetIndex.SYNTH2, 'clustering_method': ClusteringMethod.DBSCAN},
     {'n': 125000, 'dataset_index': DatasetIndex.SYNTH2, 'clustering_method': ClusteringMethod.DBSCAN},
     
-    {'n': None, 'dataset_index': DatasetIndex.REAL1, 'clustering_method': ClusteringMethod.KMEANS},
-    {'n': None, 'dataset_index': DatasetIndex.REAL1, 'clustering_method': ClusteringMethod.DBSCAN},
-    
-    {'n': None, 'dataset_index': DatasetIndex.REAL3, 'clustering_method': ClusteringMethod.KMEANS},
-    {'n': None, 'dataset_index': DatasetIndex.REAL3, 'clustering_method': ClusteringMethod.DBSCAN},
+    # {'n': None, 'dataset_index': DatasetIndex.REAL1, 'clustering_method': ClusteringMethod.KMEANS},
+    # {'n': None, 'dataset_index': DatasetIndex.REAL1, 'clustering_method': ClusteringMethod.DBSCAN},
+    # 
+    # {'n': None, 'dataset_index': DatasetIndex.REAL3, 'clustering_method': ClusteringMethod.KMEANS},
+    # {'n': None, 'dataset_index': DatasetIndex.REAL3, 'clustering_method': ClusteringMethod.DBSCAN},
 ]
 
 def getResultsDirectory(dataset_index, clustering_approach, clustering_method, n):
@@ -73,15 +73,15 @@ def process(dataset_index, clustering_approach, clustering_method, n, mp, mm, se
 
 def main():
     eval_approaches = [ClusteringApproach.SDB, ClusteringApproach.GIS, ClusteringApproach.ML]
-    repetitions = 1
-    for measurePerf in [True, False]:
-        mp = measurePerf
-        mm = not measurePerf
-        for counter in range(repetitions):
-            print("Repetition", counter)
-            for conf in eval_configs:
-                print("Processing config", conf)
-                for clustering_approach in eval_approaches:
+    repetitions = 5
+    for counter in range(repetitions):
+        print("Repetition", counter)
+        for conf in eval_configs:
+            print("Processing config", conf)
+            for clustering_approach in eval_approaches:
+                for measurePerf in [True, False]:
+                    mp = measurePerf
+                    mm = not measurePerf
                     dataset_index = conf['dataset_index']
                     clustering_method = conf['clustering_method']
                     n = conf['n']

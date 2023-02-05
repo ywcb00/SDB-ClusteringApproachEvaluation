@@ -36,8 +36,8 @@ class Real1Dataset(IDataset):
         # insert the dataset into the postgres instance
         self.data[['id', 'geom']].to_postgis(self.table_name, self.pgc.engine, if_exists='append')
         # update the srid in the database
-        updatesrid_query = f'''SELECT UpdateGeometrySRID(\'{self.table_name}\', 'geom', {self.srid});'''
-        self.pgc.execute(updatesrid_query)
+        # updatesrid_query = f'''SELECT UpdateGeometrySRID(\'{self.table_name}\', 'geom', {self.srid});'''
+        # self.pgc.execute(updatesrid_query)
         return
 
     def dropTables(self):
